@@ -13,9 +13,14 @@ class Calculator():
         print(self.var1*self.var2)
 
 def application():
-    input1 = int(input("enter first input"))
-    input2 = int(input("enter second input"))
-    inputs = Calculator(input1, input2)
+    try:
+        input1 = float(input("enter first input"))
+        input2 = float(input("enter second input"))
+        inputs = Calculator(input1, input2)
+
+    except ValueError:
+        print("sorry one or more of your inputs was not an applicable format")
+        application()
 
     selection = input("enter add/subtract/divide/multiply to choose operand")
     while selection.upper() != "ADD" and selection.upper() != "SUBTRACT" and selection.upper() != "DIVIDE" and selection.upper() != "MULTIPLY":
