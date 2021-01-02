@@ -1,9 +1,11 @@
 import tkinter as tk
 equationCreator = [[]]
+inputTemp = ""
 global x
 x=0
 displayText = "..."
 def equationCompiler(num):#adds values from button presses to the list equation creator.
+    inputDisplay.configure(text=equationCreator[0])
     global x
     if [] in equationCreator:
         x = equationCreator.index([])
