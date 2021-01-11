@@ -6,14 +6,13 @@ x=0
 
 def equationCompiler(num, equationCreator):#adds values from button presses to the list equation creator.
     global x
+    print(str(equationCreator[-1]), num)
     if [] in equationCreator:
         x = equationCreator.index([])
     if str(num).isnumeric() == True or str(num) == ".":
         equationCreator[x].append(num)
     elif str(num) == "=":
         equationCompactor(equationCreator)
-    elif str(num) == "CE":
-        equationReset(equationCreator)
     else:
         if equationCreator[-1] == []:
             equationCreator[x].append(num)
@@ -25,6 +24,7 @@ def equationCompiler(num, equationCreator):#adds values from button presses to t
             x+=1
             equationCreator.append([])
     inputDisplay.configure(text=equationCreator)
+    print(equationCreator)
 def equationCompactor(equationCreator):#turns list of indexes with one value per index into lists of numbers and operators.
     a=0
     tempEquation = ""
@@ -58,12 +58,11 @@ def resultGenerator(equationCreator, operator):#performs the actual maths in the
         a+=1
     inputDisplay.configure(text=equationCreator)
 
-def equationReset(equationCreator):
-    for i in equationCreator:
-        equationCreator.remove(i)
-    equationCreator.append([])
-    x=0
-    inputDisplay.configure(text="...")
+def equationReset(equationCreator):#algorithm for CE input, empties equation creator.
+    equationCreator.clear()#inbuilt function to clear lists which apparently exists i did not spen 3 hours trying to work around lambda being bad at all pain.
+    equationCreator.append([])#resets equationCreator to initial state, regardless of list contents.
+    x=0#ensures that sync of equationCompilation behaves correctly.
+    inputDisplay.configure(text="...")#resets text until next input.
 
 window = tk.Tk()#defines window, window size(geomety) and button information/position.
 window.geometry("300x700")
@@ -84,8 +83,9 @@ buttonDot = tk.Button(window, text = ".", command = lambda: equationCompiler("."
 buttonCe = tk.Button(window, text = "CE", command = lambda: equationReset(equationCreator), cursor = "dot", fg = "white", bg = "red", font = ("Courier", 50)).place(height = 100, width = 100, x = 200, y = 300)
 buttonDivide = tk.Button(window, text = "/", command = lambda: equationCompiler("/", equationCreator), cursor = "dot", fg = "white", bg = "green", font = ("Courier", 50)).place(height = 100, width = 100, x=0, y = 400)
 buttonMultiply = tk.Button(window, text = "*", command = lambda: equationCompiler("*", equationCreator), cursor = "dot", fg = "white", bg = "green", font = ("Courier", 50)).place(height = 100, width = 100, x = 100, y = 400)
-buttonEquals = tk.Button(window, text = "=", command = lambda: equationCompiler("=", equationCreator), cursor ="dot", fg = "white", bg = "green", font = ("Courier", 50)).place(height = 100, width = 100, x = 200, y = 400)
+buttonPi = tk.Button(window, text = "π", command = lambda: equationCompiler("π", equationCreator), cursor = "dot", fg = "white", bg = "green", font = ("Courier", 50)).place(height = 100, width = 100, x = 200, y =400)#create external pi class that can give pi value.
 buttonMinus = tk.Button(window, text = "-", command = lambda: equationCompiler("-", equationCreator), cursor = "dot", fg = "white", bg = "green", font = ("Courier", 50)).place(height = 100, width = 100, x = 0, y = 500)
 buttonPlus = tk.Button(window, text = "+", command = lambda: equationCompiler("+", equationCreator), cursor = "dot", fg = "white", bg = "green", font = ("Courier", 50)).place(height = 100, width = 100, x = 100, y = 500)
+buttonEquals = tk.Button(window, text = "=", command = lambda: equationCompiler("=", equationCreator), cursor ="dot", fg = "white", bg = "black", font = ("Courier", 50)).place(height = 100, width = 100, x = 200, y = 500)
 
 window.mainloop()#starts the program
