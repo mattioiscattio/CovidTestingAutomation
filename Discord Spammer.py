@@ -6,7 +6,7 @@ for i in range(loop):
     f = open("Bee.txt", "r")
 
     for word in f:
-        time.sleep(0.2)
+        time.sleep(0.3)
         pyautogui.typewrite(word)
         pyautogui.press("enter")
     f.close()

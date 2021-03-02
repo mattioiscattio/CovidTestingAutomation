@@ -8,8 +8,6 @@ class Test():
 
 
 var3 = Test("variable1", "variable2")
-print(var3.var1)
-print(var3.var2)
 var3.run()
 
 
