@@ -1,1 +1,0 @@
-setup class - creates headers in a file of year groups, containing forms in that year, containing students in that form.
