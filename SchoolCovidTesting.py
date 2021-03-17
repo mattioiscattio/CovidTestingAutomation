@@ -5,6 +5,7 @@ import tkinter as tk
 class covidTest():#add gui/text interface to select options from class (tkinter)
     def fileStructure(self, yearGroups, formTitles):
         lineNum = 1
+        dateList="date:1:31\ndate:2:28\ndate:3:31\ndate:4:30\ndate:5:31\ndate:6:30\ndate:7:31\ndate:8:31\ndate:9:30\ndate:10:31\ndate:11:31\ndate:12:31\n"#in future add support for leap years, also implement date system with more advanced user control.
         covidTest().dataStorageClear()#wipes the data file, use carefully
         dataFile = open("covidTestData.txt", "a")
         for i in yearGroups:
@@ -16,6 +17,8 @@ class covidTest():#add gui/text interface to select options from class (tkinter)
         dataVarTemp = list(dataVar)
         dataFile.close()
 
+
+
         for line in dataVarTemp:
             if line[-12:-2] == "year group":
                 for formName in formTitles:
@@ -23,13 +26,14 @@ class covidTest():#add gui/text interface to select options from class (tkinter)
                     lineNum+=1
                 lineNum+=1
         dataVar.append("Infected Students:\n")
-        dataVar.insert(0,"Student Data In Format: Year Group:Form Group:Days Since Last Test:Name \n")
+        dataVar.insert(0,"Student Data In Format: Year Group:Form Group:Days Since Last Test:Days Until Next Test:Name \n")
+        dataVar.insert(0,dateList)
         covidTest().dataStorageClear()
         dataFile = open("covidTestData.txt", "w")
         dataFile.writelines(dataVar)
         dataFile.close()
 
-    def studentAdder(self, studentName, studentYearGroup, studentForm):#adds students to the data structure, live database, maybe make backup system? have list /ability to select between years and forms rather than just have to type them in. Maybe have title of type in datafile, ie year=8, form=E, name=test, to allow for location of info dynamically, ie find "name" in line then after that is the actual name
+    def studentAdder(self, studentName, studentYearGroup, studentForm):#adds students to the data structure, live database, maybe make backup system? current bug:skipping year group, all in 7.
         studentYearGroup = str(studentYearGroup)
         dataFile = open("covidTestData.txt", "r")
         data = dataFile.readlines()
@@ -38,12 +42,11 @@ class covidTest():#add gui/text interface to select options from class (tkinter)
         for line in range(len(data)):
             if data[line][0:1] == studentYearGroup or data[line][0:2] == studentYearGroup:
                 yearGroup = True
-            if data[line][4:5] == studentForm and yearGroup == True:
-                data.insert(line+1,"            "+ studentYearGroup+":"+studentForm+":0:False:"+studentName+"\n")
+            if data[line][4:5] == studentForm and yearGroup == True and studentName != "" and studentName.isspace() == False:
+                data.insert(line+1,"            "+ studentYearGroup+":"+studentForm+":0:0:False:"+studentName+"\n")
                 covidTest().dataStorageClear()
                 dataFile = open("covidTestData.txt", "w")
-                for line in data:
-                    dataFile.write(line)
+                dataFile.writelines(data)
                 dataFile.close()
                 break
 
@@ -96,8 +99,9 @@ class covidTest():#add gui/text interface to select options from class (tkinter)
         studentSearchResult = tk.Label(window, text=". . .", fg="white", bg="red", font=("Courier", 10))
         studentSearchResult.place(height=50, width=600, x=0, y=400)
 
-        #timeText = tk.Label(window, text=)
-        #timeIncrease
+        timeText = tk.Label(window, text="Time Here", fg="white", bg="red", font=("Courier", 10))
+        timeText.place(height=50, width=150, x=450, y=450)
+        timeIncrease = tk.Button(window, text="add 1 day", fg="white", bg="red", font=("Courier", 10), command=lambda: covidTest().timePassage()).place(height=50, width=150, x=300, y=450)
 
         dataInput = tk.Button(window, text="input data", fg="white", bg="red", font=("Courier", 15), command=lambda: covidTest().studentInput(studentName, studentYearGroup, studentForm, yearGroups, formTitles)).place(height=50, width=600, x=0, y=300)
         resetData = tk.Button(window, text="Reset All Data", fg="white", bg="red", font=("Courier", 15), command=lambda: covidTest().fileStructure(yearGroups, formTitles)).place(height=50, width=600, x=0, y=650)
@@ -108,15 +112,21 @@ class covidTest():#add gui/text interface to select options from class (tkinter)
         covidTest().studentAdder(studentName.get(), yearGroups[studentYearGroup.curselection()[0]], formTitles[studentForm.curselection()[0]])
         studentName.delete(0, "end")
 
-    def timePassage(self):#have button to incrase/decrease time to real time, then apply time update
+    def timePassage(self):#have button to incrase/decrease time to real time, then apply time update, currently just adds one day, implement calender system.
         dataFile = open("covidTestData.txt", "r")
         data = dataFile.readlines()
-        for line in data:
-            if line[0] == " " and line[4] == " ":#shows that there is no header for yeargroup/other on that line, ie shows its a student data line
-                print(line)#edit days since last test
-                print(line.split(":"))
+        dataFile.close()
 
+        for lineNum in range(len(data)):
+            if data[lineNum][0]==" " and data[lineNum][4]==" ":#isolates students from file
+                editLine = data[lineNum].split(":")
+                editLine[2] = str(int(editLine[2]) + 1)
+                editLine[3] = str(int(editLine[3]) - 1)
+                data[lineNum] = ":".join(editLine)
 
+        dataFile = open("covidTestData.txt", "w")
+        dataFile.writelines(data)
+        dataFile.close()
 
 covidTest().start()#starts the program.
 
